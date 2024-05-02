@@ -12,6 +12,7 @@ import java.util.List;
 public class TimelineServiceImpl implements TimelineService {
     private final static String ASTERISK = "*";
     private final static String REGEX = "-";
+    private final static String NOT_FOUND = "-";
     private final static String INVALID_DATE_FORMAT_EXCEPTION = "Invalid date format";
     private final static String INVALID_TIMELINE_FORMAT_EXCEPTION = "Invalid timeline format";
     private final static String INVALID_QUERY_FORMAT_EXCEPTION = "Invalid query format";
@@ -91,7 +92,7 @@ public class TimelineServiceImpl implements TimelineService {
                 .toList();
 
         double averageTime = times.isEmpty() ? -1 : times.stream().mapToInt(Integer::intValue).average().orElse(-1);
-        System.out.println(averageTime == -1 ? "-" : averageTime);
+        System.out.println(averageTime == -1 ? NOT_FOUND : averageTime);
     }
 
     private boolean isValidTimeline(Timeline timeline, Query query) {
