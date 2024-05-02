@@ -4,15 +4,14 @@ import exception.InvalidLineException;
 import exception.InvalidQueryException;
 import model.Query;
 import model.Timeline;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class TimelineServiceImpl implements TimelineService {
+    private final static String ASTERISK = "*";
+    private final static String REGEX = "-";
     private final static String INVALID_DATE_FORMAT_EXCEPTION = "Invalid date format";
     private final static String INVALID_TIMELINE_FORMAT_EXCEPTION = "Invalid timeline format";
     private final static String INVALID_QUERY_FORMAT_EXCEPTION = "Invalid query format";
@@ -24,6 +23,7 @@ public class TimelineServiceImpl implements TimelineService {
     private final static Integer RESPONSE_TYPE_INDEX = 3;
     private final static Integer DATE_INDEX = 4;
     private final static Integer TIME_INDEX = 5;
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
 
     @Override
     public Query parseLineToQuery(String[] splitLine) throws InvalidQueryException {
@@ -32,13 +32,12 @@ public class TimelineServiceImpl implements TimelineService {
         }
 
         Query query = new Query();
-        SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
 
         query.setServiceId(splitLine[SERVICE_ID_INDEX]);
         query.setQuestionTypeId(splitLine[QUESTION_TYPE_ID_INDEX]);
         query.setResponseType(splitLine[RESPONSE_TYPE_INDEX]);
 
-        String[] dates = splitLine[DATE_INDEX].split("-");
+        String[] dates = splitLine[DATE_INDEX].split(REGEX);
         if (dates.length > 2 || dates.length < 1) {
             throw new InvalidQueryException(INVALID_DATE_FORMAT_EXCEPTION);
         }
@@ -67,7 +66,6 @@ public class TimelineServiceImpl implements TimelineService {
         }
 
         Timeline timeline = new Timeline();
-        SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
 
         timeline.setServiceId(splitLine[SERVICE_ID_INDEX]);
         timeline.setQuestionTypeId(splitLine[QUESTION_TYPE_ID_INDEX]);
@@ -97,9 +95,13 @@ public class TimelineServiceImpl implements TimelineService {
     }
 
     private boolean isValidTimeline(Timeline timeline, Query query) {
-        return (timeline.getServiceId().startsWith(query.getServiceId()) || query.getServiceId().equals("*"))
-                && (timeline.getQuestionTypeId().startsWith(query.getQuestionTypeId()) || query.getQuestionTypeId().equals("*"))
-                && (timeline.getResponseType().equals(query.getResponseType()) || query.getResponseType().equals("*"))
+        String queryServiceId = query.getServiceId();
+        String queryQuestionTypeId = query.getQuestionTypeId();
+        String queryResponseType = query.getResponseType();
+
+        return (timeline.getServiceId().startsWith(queryServiceId) || ASTERISK.equals(queryServiceId))
+                && (timeline.getQuestionTypeId().startsWith(queryQuestionTypeId) || ASTERISK.equals(queryQuestionTypeId))
+                && (timeline.getResponseType().equals(queryResponseType) || ASTERISK.equals(queryResponseType))
                 && (query.getDateFrom().compareTo(timeline.getDate()) <= 0)
                 && (query.getDateTo() == null || query.getDateTo().compareTo(timeline.getDate()) >= 0);
     }
