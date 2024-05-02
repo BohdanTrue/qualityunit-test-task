@@ -1,3 +1,5 @@
+package model;
+
 import java.util.Date;
 
 public class Timeline {
@@ -49,7 +51,7 @@ public class Timeline {
 
     @Override
     public String toString() {
-        return "Timeline{" +
+        return "model.Timeline{" +
                 "serviceId='" + serviceId + '\'' +
                 ", questionType='" + questionTypeId + '\'' +
                 ", responseType='" + responseType + '\'' +

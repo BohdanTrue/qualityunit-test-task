@@ -1,3 +1,5 @@
+package model;
+
 import java.time.LocalDate;
 import java.util.Date;
 
@@ -50,7 +52,7 @@ public class Query {
 
     @Override
     public String toString() {
-        return "Query{" +
+        return "model.Query{" +
                 "serviceId='" + serviceId + '\'' +
                 ", questionTypeId='" + questionTypeId + '\'' +
                 ", responseType='" + responseType + '\'' +
